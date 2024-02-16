@@ -340,6 +340,11 @@ enum HardwareModel {
   CANARYONE = 29;
 
   /*
+   * Waveshare RP2040 LoRa - https://www.waveshare.com/rp2040-lora.htm
+   */
+  RP2040_LORA = 30;
+
+  /*
    * ---------------------------------------------------------------------------
    * Less common/prototype boards listed here (needs one more byte over the air)
    * ---------------------------------------------------------------------------
@@ -423,6 +428,7 @@ enum HardwareModel {
 
   /*
    * Heltec Wireless Tracker with ESP32-S3 CPU, built-in GPS, and TFT
+   * Newer V1.1, version is written on the PCB near the display.
    */
   HELTEC_WIRELESS_TRACKER = 48;
 
@@ -476,6 +482,12 @@ enum HardwareModel {
    * Flex connector marking is FPC-7528B
    */
   HELTEC_WIRELESS_PAPER_V1_0 = 57;
+
+  /*
+   * Heltec Wireless Tracker with ESP32-S3 CPU, built-in GPS, and TFT
+   * Older "V1.0" Variant
+   */
+  HELTEC_WIRELESS_TRACKER_V1_0 = 58;
   
   /*
    * ------------------------------------------------------------------------------------------------------------------------------------------
