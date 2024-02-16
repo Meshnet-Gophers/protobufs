@@ -66,6 +66,11 @@ func (m *Config_PositionConfig) CloneVT() *Config_PositionConfig {
 	r.BroadcastSmartMinimumIntervalSecs = m.BroadcastSmartMinimumIntervalSecs
 	r.GpsEnGpio = m.GpsEnGpio
 	r.GpsMode = m.GpsMode
+	if rhs := m.ChannelPrecision; rhs != nil {
+		tmpContainer := make([]uint32, len(rhs))
+		copy(tmpContainer, rhs)
+		r.ChannelPrecision = tmpContainer
+	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
 		copy(r.unknownFields, m.unknownFields)
@@ -400,6 +405,15 @@ func (this *Config_PositionConfig) EqualVT(that *Config_PositionConfig) bool {
 	}
 	if this.GpsMode != that.GpsMode {
 		return false
+	}
+	if len(this.ChannelPrecision) != len(that.ChannelPrecision) {
+		return false
+	}
+	for i, vx := range this.ChannelPrecision {
+		vy := that.ChannelPrecision[i]
+		if vx != vy {
+			return false
+		}
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
 }
@@ -1000,6 +1014,26 @@ func (m *Config_PositionConfig) MarshalToSizedBufferVT(dAtA []byte) (int, error)
 	if m.unknownFields != nil {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
+	}
+	if len(m.ChannelPrecision) > 0 {
+		var pksize2 int
+		for _, num := range m.ChannelPrecision {
+			pksize2 += protohelpers.SizeOfVarint(uint64(num))
+		}
+		i -= pksize2
+		j1 := i
+		for _, num := range m.ChannelPrecision {
+			for num >= 1<<7 {
+				dAtA[j1] = uint8(uint64(num)&0x7f | 0x80)
+				num >>= 7
+				j1++
+			}
+			dAtA[j1] = uint8(num)
+			j1++
+		}
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(pksize2))
+		i--
+		dAtA[i] = 0x72
 	}
 	if m.GpsMode != 0 {
 		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.GpsMode))
@@ -1944,6 +1978,26 @@ func (m *Config_PositionConfig) MarshalToSizedBufferVTStrict(dAtA []byte) (int, 
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
+	if len(m.ChannelPrecision) > 0 {
+		var pksize2 int
+		for _, num := range m.ChannelPrecision {
+			pksize2 += protohelpers.SizeOfVarint(uint64(num))
+		}
+		i -= pksize2
+		j1 := i
+		for _, num := range m.ChannelPrecision {
+			for num >= 1<<7 {
+				dAtA[j1] = uint8(uint64(num)&0x7f | 0x80)
+				num >>= 7
+				j1++
+			}
+			dAtA[j1] = uint8(num)
+			j1++
+		}
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(pksize2))
+		i--
+		dAtA[i] = 0x72
+	}
 	if m.GpsMode != 0 {
 		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.GpsMode))
 		i--
@@ -2874,6 +2928,13 @@ func (m *Config_PositionConfig) SizeVT() (n int) {
 	if m.GpsMode != 0 {
 		n += 1 + protohelpers.SizeOfVarint(uint64(m.GpsMode))
 	}
+	if len(m.ChannelPrecision) > 0 {
+		l = 0
+		for _, e := range m.ChannelPrecision {
+			l += protohelpers.SizeOfVarint(uint64(e))
+		}
+		n += 1 + protohelpers.SizeOfVarint(uint64(l)) + l
+	}
 	n += len(m.unknownFields)
 	return n
 }
@@ -3715,6 +3776,82 @@ func (m *Config_PositionConfig) UnmarshalVT(dAtA []byte) error {
 				if b < 0x80 {
 					break
 				}
+			}
+		case 14:
+			if wireType == 0 {
+				var v uint32
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protohelpers.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= uint32(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				m.ChannelPrecision = append(m.ChannelPrecision, v)
+			} else if wireType == 2 {
+				var packedLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protohelpers.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					packedLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if packedLen < 0 {
+					return protohelpers.ErrInvalidLength
+				}
+				postIndex := iNdEx + packedLen
+				if postIndex < 0 {
+					return protohelpers.ErrInvalidLength
+				}
+				if postIndex > l {
+					return io.ErrUnexpectedEOF
+				}
+				var elementCount int
+				var count int
+				for _, integer := range dAtA[iNdEx:postIndex] {
+					if integer < 128 {
+						count++
+					}
+				}
+				elementCount = count
+				if elementCount != 0 && len(m.ChannelPrecision) == 0 {
+					m.ChannelPrecision = make([]uint32, 0, elementCount)
+				}
+				for iNdEx < postIndex {
+					var v uint32
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protohelpers.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint32(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					m.ChannelPrecision = append(m.ChannelPrecision, v)
+				}
+			} else {
+				return fmt.Errorf("proto: wrong wireType = %d for field ChannelPrecision", wireType)
 			}
 		default:
 			iNdEx = preIndex
@@ -5916,6 +6053,82 @@ func (m *Config_PositionConfig) UnmarshalVTUnsafe(dAtA []byte) error {
 				if b < 0x80 {
 					break
 				}
+			}
+		case 14:
+			if wireType == 0 {
+				var v uint32
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protohelpers.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= uint32(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				m.ChannelPrecision = append(m.ChannelPrecision, v)
+			} else if wireType == 2 {
+				var packedLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protohelpers.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					packedLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if packedLen < 0 {
+					return protohelpers.ErrInvalidLength
+				}
+				postIndex := iNdEx + packedLen
+				if postIndex < 0 {
+					return protohelpers.ErrInvalidLength
+				}
+				if postIndex > l {
+					return io.ErrUnexpectedEOF
+				}
+				var elementCount int
+				var count int
+				for _, integer := range dAtA[iNdEx:postIndex] {
+					if integer < 128 {
+						count++
+					}
+				}
+				elementCount = count
+				if elementCount != 0 && len(m.ChannelPrecision) == 0 {
+					m.ChannelPrecision = make([]uint32, 0, elementCount)
+				}
+				for iNdEx < postIndex {
+					var v uint32
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protohelpers.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint32(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					m.ChannelPrecision = append(m.ChannelPrecision, v)
+				}
+			} else {
+				return fmt.Errorf("proto: wrong wireType = %d for field ChannelPrecision", wireType)
 			}
 		default:
 			iNdEx = preIndex

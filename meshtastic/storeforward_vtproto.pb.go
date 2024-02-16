@@ -130,12 +130,16 @@ func (m *StoreAndForward_Heartbeat_) CloneVT() isStoreAndForward_Variant {
 	return r
 }
 
-func (m *StoreAndForward_Empty) CloneVT() isStoreAndForward_Variant {
+func (m *StoreAndForward_Text) CloneVT() isStoreAndForward_Variant {
 	if m == nil {
-		return (*StoreAndForward_Empty)(nil)
+		return (*StoreAndForward_Text)(nil)
 	}
-	r := new(StoreAndForward_Empty)
-	r.Empty = m.Empty
+	r := new(StoreAndForward_Text)
+	if rhs := m.Text; rhs != nil {
+		tmpBytes := make([]byte, len(rhs))
+		copy(tmpBytes, rhs)
+		r.Text = tmpBytes
+	}
 	return r
 }
 
@@ -335,8 +339,8 @@ func (this *StoreAndForward_Heartbeat_) EqualVT(thatIface isStoreAndForward_Vari
 	return true
 }
 
-func (this *StoreAndForward_Empty) EqualVT(thatIface isStoreAndForward_Variant) bool {
-	that, ok := thatIface.(*StoreAndForward_Empty)
+func (this *StoreAndForward_Text) EqualVT(thatIface isStoreAndForward_Variant) bool {
+	that, ok := thatIface.(*StoreAndForward_Text)
 	if !ok {
 		return false
 	}
@@ -346,7 +350,7 @@ func (this *StoreAndForward_Empty) EqualVT(thatIface isStoreAndForward_Variant) 
 	if this == nil && that != nil || this != nil && that == nil {
 		return false
 	}
-	if this.Empty != that.Empty {
+	if string(this.Text) != string(that.Text) {
 		return false
 	}
 	return true
@@ -630,21 +634,18 @@ func (m *StoreAndForward_Heartbeat_) MarshalToSizedBufferVT(dAtA []byte) (int, e
 	}
 	return len(dAtA) - i, nil
 }
-func (m *StoreAndForward_Empty) MarshalToVT(dAtA []byte) (int, error) {
+func (m *StoreAndForward_Text) MarshalToVT(dAtA []byte) (int, error) {
 	size := m.SizeVT()
 	return m.MarshalToSizedBufferVT(dAtA[:size])
 }
 
-func (m *StoreAndForward_Empty) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+func (m *StoreAndForward_Text) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 	i := len(dAtA)
+	i -= len(m.Text)
+	copy(dAtA[i:], m.Text)
+	i = protohelpers.EncodeVarint(dAtA, i, uint64(len(m.Text)))
 	i--
-	if m.Empty {
-		dAtA[i] = 1
-	} else {
-		dAtA[i] = 0
-	}
-	i--
-	dAtA[i] = 0x28
+	dAtA[i] = 0x2a
 	return len(dAtA) - i, nil
 }
 func (m *StoreAndForward_Statistics) MarshalVTStrict() (dAtA []byte, err error) {
@@ -851,7 +852,7 @@ func (m *StoreAndForward) MarshalToSizedBufferVTStrict(dAtA []byte) (int, error)
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
-	if msg, ok := m.Variant.(*StoreAndForward_Empty); ok {
+	if msg, ok := m.Variant.(*StoreAndForward_Text); ok {
 		size, err := msg.MarshalToSizedBufferVTStrict(dAtA[:i])
 		if err != nil {
 			return 0, err
@@ -944,21 +945,18 @@ func (m *StoreAndForward_Heartbeat_) MarshalToSizedBufferVTStrict(dAtA []byte) (
 	}
 	return len(dAtA) - i, nil
 }
-func (m *StoreAndForward_Empty) MarshalToVTStrict(dAtA []byte) (int, error) {
+func (m *StoreAndForward_Text) MarshalToVTStrict(dAtA []byte) (int, error) {
 	size := m.SizeVT()
 	return m.MarshalToSizedBufferVTStrict(dAtA[:size])
 }
 
-func (m *StoreAndForward_Empty) MarshalToSizedBufferVTStrict(dAtA []byte) (int, error) {
+func (m *StoreAndForward_Text) MarshalToSizedBufferVTStrict(dAtA []byte) (int, error) {
 	i := len(dAtA)
+	i -= len(m.Text)
+	copy(dAtA[i:], m.Text)
+	i = protohelpers.EncodeVarint(dAtA, i, uint64(len(m.Text)))
 	i--
-	if m.Empty {
-		dAtA[i] = 1
-	} else {
-		dAtA[i] = 0
-	}
-	i--
-	dAtA[i] = 0x28
+	dAtA[i] = 0x2a
 	return len(dAtA) - i, nil
 }
 func (m *StoreAndForward_Statistics) SizeVT() (n int) {
@@ -1085,13 +1083,14 @@ func (m *StoreAndForward_Heartbeat_) SizeVT() (n int) {
 	}
 	return n
 }
-func (m *StoreAndForward_Empty) SizeVT() (n int) {
+func (m *StoreAndForward_Text) SizeVT() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	n += 2
+	l = len(m.Text)
+	n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
 	return n
 }
 func (m *StoreAndForward_Statistics) UnmarshalVT(dAtA []byte) error {
@@ -1686,10 +1685,10 @@ func (m *StoreAndForward) UnmarshalVT(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Empty", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Text", wireType)
 			}
-			var v int
+			var byteLen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return protohelpers.ErrIntOverflow
@@ -1699,13 +1698,25 @@ func (m *StoreAndForward) UnmarshalVT(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				v |= int(b&0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			b := bool(v != 0)
-			m.Variant = &StoreAndForward_Empty{Empty: b}
+			if byteLen < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := make([]byte, postIndex-iNdEx)
+			copy(v, dAtA[iNdEx:postIndex])
+			m.Variant = &StoreAndForward_Text{Text: v}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := protohelpers.Skip(dAtA[iNdEx:])
@@ -2320,10 +2331,10 @@ func (m *StoreAndForward) UnmarshalVTUnsafe(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Empty", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Text", wireType)
 			}
-			var v int
+			var byteLen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return protohelpers.ErrIntOverflow
@@ -2333,13 +2344,24 @@ func (m *StoreAndForward) UnmarshalVTUnsafe(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				v |= int(b&0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			b := bool(v != 0)
-			m.Variant = &StoreAndForward_Empty{Empty: b}
+			if byteLen < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := dAtA[iNdEx:postIndex]
+			m.Variant = &StoreAndForward_Text{Text: v}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := protohelpers.Skip(dAtA[iNdEx:])
