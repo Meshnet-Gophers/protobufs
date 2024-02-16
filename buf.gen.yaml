@@ -6,6 +6,7 @@ plugins:
   - plugin: buf.build/protocolbuffers/go
     out: ./
     opt: paths=source_relative
-  - plugin: go-vtproto
+  - plugin: buf.build/community/planetscale-vtprotobuf:v0.6.0
     out: ./
-    opt: paths=source_relative
+    opt:
+      - paths=source_relative
